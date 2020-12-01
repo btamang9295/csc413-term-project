@@ -48,4 +48,9 @@ public abstract class Tank extends Entity{
     protected void turnRight() {
         angle += TURN_SPEED;
     }
+    protected void shootShell()
+    {
+        Shell shell = new Shell(getShellX(), getShellY(), getAngle());
+        shell.moveForward();
+    }
 }

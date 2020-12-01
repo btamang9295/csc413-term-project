@@ -37,8 +37,7 @@ public class PlayerTank extends Tank  {
          }
          if (GameState.shootPressed)
          {
-
-
+             shootShell();
          }
     }
 

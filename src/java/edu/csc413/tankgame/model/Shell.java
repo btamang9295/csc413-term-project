@@ -22,7 +22,11 @@ public class Shell extends Entity{
 
     @Override
     public void move(GameState gameState) {
-        //moveForward();
+        moveForward();
+    }
+
+    public void moveForward()
+    {
         x += MOVEMENT_SPEED * Math.cos(angle);
         y += MOVEMENT_SPEED * Math.sin(angle);
     }

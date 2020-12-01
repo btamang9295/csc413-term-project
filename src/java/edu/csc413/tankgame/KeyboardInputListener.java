@@ -40,7 +40,7 @@ public class KeyboardInputListener implements KeyListener {
 
         }
         else if (keyCode == KeyEvent.VK_SPACE){
-            GameState.shootPressed = true;
+            GameState.holdShootPressed();
             System.out.println("space pressed");
 
         }
