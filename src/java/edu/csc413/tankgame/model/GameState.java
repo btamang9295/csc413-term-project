@@ -23,12 +23,14 @@ public class GameState {
 
     public static final String PLAYER_TANK_ID = "player-tank";
     public static final String AI_TANK_ID = "ai-tank";
+    public static final String CUSHION_AI_TANK_ID = "cushion-ai";
+
+
     // TODO: Feel free to add more tank IDs if you want to support multiple AI tanks! Just make sure they're unique.
 
     // TODO: Implement.
     // There's a lot of information the GameState will need to store to provide contextual information. Add whatever
     // instance variables, constructors, and methods are needed.
-
     public static boolean upPressed;
     public static  boolean downPressed;
     public static boolean leftPressed;
@@ -36,14 +38,77 @@ public class GameState {
     public static  boolean shootPressed;
 
 
-    private final List<Entity> entities = new ArrayList <> ();
 
+
+    private final List<Entity> entities = new ArrayList <> ();
     public void addEntity(Entity tank){
         entities.add(tank);
     }
-
     public List<Entity> getEntities(){
         return entities;
+    }
+    public void removeEntity(Entity entity){
+            entities.remove(entity);
+    }
+
+    public Entity getEntity(String id)
+    {
+        for(Entity entity: getEntities())
+        {
+            if(entity.getId().equals(id))
+            {
+                return entity;
+            }
+        }
+        return null;
+    }
+
+
+    private final List <Entity> shellEntities = new ArrayList<>();
+    public void addShellEntity(Entity shell)
+    {
+        shellEntities.add(shell);
+        //entities.add(shell);
+    }
+    public void removeShellEntity(Entity shell)
+    {
+            shellEntities.remove(shell);
+    }
+    public void clearShellEntity ()
+    {
+        shellEntities.clear();
+    }
+    public List<Entity> getShellEntities(){
+        return shellEntities;
+    }
+
+
+
+    private final List <Entity> removableEntity = new ArrayList<>();
+
+    public void addRemovableEntity(Entity entity)
+    { removableEntity.add(entity); }
+
+    public List<Entity> getRemovableEntity()
+    { return removableEntity; }
+
+    public void removeRemovableEntity(Entity shell)
+    { removableEntity.remove(shell); }
+
+    public void  clearRemovableEntity()
+    {
+        removableEntity.clear();
+    }
+
+
+
+
+    public boolean entitiesOverlap(Entity entity1, Entity entity2)
+    {
+        return entity1.getX() < entity2.getXBound()
+                && entity1.getXBound() > entity2.getX()
+                && entity1.getY() < entity2.getYBound()
+                && entity1.getYBound() > entity2.getY();
     }
 
 
@@ -62,7 +127,6 @@ public class GameState {
      {
          rightPressed = true;
      }
-
      public static void holdShootPressed()
      {
          shootPressed = true;

@@ -10,8 +10,8 @@ public abstract class Tank extends Entity{
     private static final double MOVEMENT_SPEED = 2.0;
     private static final double TURN_SPEED = Math.toRadians(3.0);
 
-    public Tank(String id, double x, double y, double angle) {
-        super(id, x, y, angle);
+    public Tank(String id, int health, double x, double y, double angle) {
+        super(id, health, x, y, angle);
     }
 
 
@@ -19,18 +19,12 @@ public abstract class Tank extends Entity{
     // is created by this tank. It needs a slight offset so it appears from the front of the tank,
     // even if the tank is rotated. The shell should have the same angle as the tank.
 
-    private double getShellX() {
-        return getX() + 30.0 * (Math.cos(getAngle()) + 0.5);
-    }
 
-    private double getShellY() {
-        return getY() + 30.0 * (Math.sin(getAngle()) + 0.5);
-    }
 
     private void move(){
 
     }
-
+    
     protected void moveForward() {
         x += MOVEMENT_SPEED * Math.cos(angle);
         y += MOVEMENT_SPEED * Math.sin(angle);
@@ -48,9 +42,81 @@ public abstract class Tank extends Entity{
     protected void turnRight() {
         angle += TURN_SPEED;
     }
-    protected void shootShell()
+
+
+    protected void shootShell(GameState gameState)
     {
-        Shell shell = new Shell(getShellX(), getShellY(), getAngle());
-        shell.moveForward();
+        Shell shell = new Shell( getShellX(), getHealth(), getShellY(), getAngle());
+        gameState.addShellEntity(shell);
     }
+
+    private double getShellX() {
+        return getX() + 30.0 * (Math.cos(getAngle()) + 0.5);
+    }
+
+    private double getShellY() {
+        return getY() + 30.0 * (Math.sin(getAngle()) + 0.5);
+    }
+
+
+
+    @Override
+    public double getXBound() {
+        return getX() + 55.0;
+    }
+
+    @Override
+    public double getYBound() {
+        return getY() + 55.0;
+    }
+
+    @Override
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    @Override
+    public void setY(double y) {
+        this.y = y;
+    }
+
+
+
+    public void checkBounds(GameState gameState) {
+        if( x < GameState.TANK_X_LOWER_BOUND)
+        {
+            x = GameState.TANK_X_LOWER_BOUND;
+        }
+        if(getX() > GameState.TANK_X_UPPER_BOUND)
+        {
+            x = GameState.TANK_X_UPPER_BOUND;
+        }
+        if(getY() < GameState.TANK_X_LOWER_BOUND)
+        {
+            y = GameState.TANK_Y_LOWER_BOUND;
+        }
+        if(getY() > GameState.TANK_Y_UPPER_BOUND)
+        {
+            y = GameState.TANK_Y_UPPER_BOUND;
+        }
+    }
+
+    public void checkLives(GameState gameState)
+    {
+        for (Entity entity: gameState.getEntities())
+        {
+            for(Entity entity1: gameState.getEntities())
+            {
+                if (gameState.entitiesOverlap(entity, entity1))
+                {
+                    if (health == 0)
+                    {
+                        gameState.removeEntity(entity1);
+                    }
+                }
+            }
+        }
+    }
+
+
 }

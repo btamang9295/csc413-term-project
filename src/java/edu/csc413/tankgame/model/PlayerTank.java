@@ -1,20 +1,15 @@
 package edu.csc413.tankgame.model;
 
-import edu.csc413.tankgame.KeyboardInputListener;
-
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.font.GlyphMetrics;
-
 public class PlayerTank extends Tank  {
-    public PlayerTank(String id, double x, double y, double angle) {
-        super(id, x, y, angle);
+    public PlayerTank(String id, int health, double x, double y, double angle) {
+        super(id, health, x, y, angle);
     }
 
+    private int cooldown = 80 ;
 
 
-    @Override
     public void move(GameState gameState){
+        cooldown++;
 
         if(GameState.upPressed)
         {
@@ -37,8 +32,16 @@ public class PlayerTank extends Tank  {
          }
          if (GameState.shootPressed)
          {
-             shootShell();
+             if (cooldown > 80) {
+                 shootShell(gameState);
+             }
+             cooldown = 0;
          }
+         checkBounds(gameState);
+
     }
+
+
+
 
 }

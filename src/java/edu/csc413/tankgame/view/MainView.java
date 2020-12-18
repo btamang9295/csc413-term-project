@@ -9,6 +9,7 @@ import edu.csc413.tankgame.model.PlayerTank;
 import javax.print.event.PrintJobListener;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
@@ -43,17 +44,11 @@ public class MainView {
     private final CardLayout mainPanelLayout; //allows to register number of views called each called cards
     private final RunGameView runGameView;
 
-
-
-    public static boolean start_clicked ;
-    public static boolean exit_clicked ;
-
-
     // TODO: Finish implementing this.
     // MainView is responsible for assigning listeners to various UI components (like buttons and keyboard input).
     // However, we want to return control to GameDriver when those events happen. How can we have listeners that directs
     // us back to the code in GameDriver?
-    public MainView() {
+    public MainView(GameDriver.ActionMenu actionMenu) {
         mainJFrame = new JFrame();
         mainJFrame.setVisible(false);
         mainJFrame.setResizable(false);
@@ -67,6 +62,9 @@ public class MainView {
 
 
 
+
+
+
         KeyboardInputListener listener = new KeyboardInputListener();
         mainJFrame.addKeyListener(listener);
 
@@ -75,10 +73,10 @@ public class MainView {
         mainPanelLayout = new CardLayout();
         mainPanel.setLayout(mainPanelLayout);
 
-        StartMenuView startMenuView = new StartMenuView("Start Game");
+        StartMenuView startMenuView = new StartMenuView("Start Game", actionMenu);
         mainPanel.add(startMenuView, Screen.START_MENU_SCREEN.getScreenName());
 
-        StartMenuView endMenuView = new StartMenuView("Restart Game");
+        StartMenuView endMenuView = new StartMenuView("Restart Game", actionMenu);
         mainPanel.add(endMenuView, Screen.END_MENU_SCREEN.getScreenName());
 
         runGameView = new RunGameView();
@@ -88,14 +86,6 @@ public class MainView {
     }
         //WRONG IMPLEMENTATION of key listener
 
-    public static void pressed_startGame() {
-        start_clicked = true;
-    }
-
-    public static void pressed_ExitGame()
-    {
-        exit_clicked = true;
-    }
 
 
 

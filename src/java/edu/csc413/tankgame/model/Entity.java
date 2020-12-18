@@ -2,12 +2,14 @@ package edu.csc413.tankgame.model;
 
 public abstract class Entity {
     protected final String id;
+    protected int health;
     protected double x;
     protected double y;
     protected double angle;
 
-    public Entity(String id, double x, double y, double angle) {
+    public Entity(String id, int health, double x, double y, double angle) {
         this.id = id;
+        this.health = health;
         this.x = x;
         this.y = y;
         this.angle = angle;
@@ -15,6 +17,11 @@ public abstract class Entity {
 
     public String getId() {
         return id;
+    }
+
+    public int getHealth()
+    {
+        return health;
     }
 
     public double getX() {
@@ -29,16 +36,16 @@ public abstract class Entity {
         return angle;
     }
 
+
+
     public abstract void move(GameState gameState);
-
-
-    // For player tank
-//        if (w is presses){
-//            moveForward();
-//        }
-//        if (s is presses){
-//            moveBackward();
-//        }
+    public abstract void checkBounds(GameState gameState);
+    public abstract void checkLives(GameState gameState);
+    public abstract double getXBound();
+    public abstract double getYBound();
+    public abstract void setX(double x );
+    public abstract void setY(double y);
+    //public abstract void lives();
 
 
     /*
