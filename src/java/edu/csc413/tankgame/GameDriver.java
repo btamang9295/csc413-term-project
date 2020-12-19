@@ -39,12 +39,12 @@ public class GameDriver{
 
 
 
-        //mainView.setScreen(MainView.Screen.START_MENU_SCREEN);
+        mainView.setScreen(MainView.Screen.START_MENU_SCREEN);
 
 
         //comment this out
-        mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
-        runGame();
+//        mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
+//        runGame();
 
     }
 
