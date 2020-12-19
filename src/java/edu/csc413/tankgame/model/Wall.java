@@ -1,8 +1,14 @@
 package edu.csc413.tankgame.model;
 
+import edu.csc413.tankgame.WallImageInfo;
+
 public class Wall extends Entity {
     public Wall(String id, int health, double x, double y, double angle) {
-        super(id, health,  x, y, angle);
+        super(id, health,  x, y, angle, id);
+    }
+    public void setID(String id)
+    {
+        this.id = id;
     }
 
     @Override
@@ -27,7 +33,14 @@ public class Wall extends Entity {
 
     public int getHealth()
     {
-        return health;
+        //return health;
+         System.out.println(health);
+         return health;
+    }
+
+    public void setHealth(int health)
+    {
+        this.health = health;
     }
 
 
@@ -50,25 +63,8 @@ public class Wall extends Entity {
     public void setX(double x) {
 
     }
-
     @Override
     public void setY(double y) {
     }
-    public void checkLives(GameState gameState)
-    {
-        for (Entity entity: gameState.getEntities())
-        {
-            for(Entity entity1: gameState.getEntities())
-            {
-                if (gameState.entitiesOverlap(entity, entity1))
-                {
-                    entity1.health--;
-                    entity.health--;
-                }
-            }
-        }
-
-    }
-
 
 }

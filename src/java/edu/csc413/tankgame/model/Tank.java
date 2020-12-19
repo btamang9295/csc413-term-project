@@ -11,15 +11,13 @@ public abstract class Tank extends Entity{
     private static final double TURN_SPEED = Math.toRadians(3.0);
 
     public Tank(String id, int health, double x, double y, double angle) {
-        super(id, health, x, y, angle);
+        super(id, health, x, y, angle, id);
     }
 
 
     // The following methods will be useful for determining where a shell should be spawned when it
     // is created by this tank. It needs a slight offset so it appears from the front of the tank,
     // even if the tank is rotated. The shell should have the same angle as the tank.
-
-
 
     private void move(){
 
@@ -46,7 +44,13 @@ public abstract class Tank extends Entity{
 
     protected void shootShell(GameState gameState)
     {
-        Shell shell = new Shell( getShellX(), getHealth(), getShellY(), getAngle());
+        Shell shell = new Shell( getShellX(), getHealth(), getShellY(), getAngle(), id);
+        gameState.addShellEntity(shell);
+    }
+
+    protected void shootSmartShell (GameState gameState)
+    {
+        Shell shell = new Shell (getShellX(), getHealth(), getShellY(), getAngle(), id);
         gameState.addShellEntity(shell);
     }
 
@@ -57,8 +61,6 @@ public abstract class Tank extends Entity{
     private double getShellY() {
         return getY() + 30.0 * (Math.sin(getAngle()) + 0.5);
     }
-
-
 
     @Override
     public double getXBound() {
@@ -80,7 +82,15 @@ public abstract class Tank extends Entity{
         this.y = y;
     }
 
+    public int getHealth()
+    {
+        return health;
+    }
 
+    public void setHealth(int health)
+    {
+        this.health = health;
+    }
 
     public void checkBounds(GameState gameState) {
         if( x < GameState.TANK_X_LOWER_BOUND)
@@ -98,23 +108,6 @@ public abstract class Tank extends Entity{
         if(getY() > GameState.TANK_Y_UPPER_BOUND)
         {
             y = GameState.TANK_Y_UPPER_BOUND;
-        }
-    }
-
-    public void checkLives(GameState gameState)
-    {
-        for (Entity entity: gameState.getEntities())
-        {
-            for(Entity entity1: gameState.getEntities())
-            {
-                if (gameState.entitiesOverlap(entity, entity1))
-                {
-                    if (health == 0)
-                    {
-                        gameState.removeEntity(entity1);
-                    }
-                }
-            }
         }
     }
 

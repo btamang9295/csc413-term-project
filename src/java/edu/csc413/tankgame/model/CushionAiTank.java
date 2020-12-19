@@ -4,8 +4,14 @@ public class CushionAiTank extends Tank {
     public CushionAiTank(String id, int health, double x, double y, double angle) {
         super(id, health, x, y, angle);
     }
+
+
+
+
+    private int cooldown = 400;
     @Override
     public void move(GameState gameState) {
+        cooldown --;
         Entity playerTank = gameState.getEntity(GameState.PLAYER_TANK_ID);
         double dx = playerTank.getX()-getX();
         double dy = playerTank.getY()-getY();
@@ -31,7 +37,10 @@ public class CushionAiTank extends Tank {
         {
             moveBackward();
         }
-        //shootShell(gameState);
+        if (cooldown == 0) {
+            shootShell(gameState);
+            cooldown = 400;
+        }
   }
 
 

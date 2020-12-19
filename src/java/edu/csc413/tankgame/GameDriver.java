@@ -23,11 +23,10 @@ public class GameDriver{
     private final MainView mainView;
     private final RunGameView runGameView;
     private final GameState gameState;
-    private final ActionMenu actionMenu;
 
 
     public GameDriver() {
-        actionMenu = new ActionMenu();
+        ActionMenu actionMenu = new ActionMenu();
         mainView = new MainView(actionMenu);
         runGameView = mainView.getRunGameView();
         gameState = new GameState();
@@ -36,8 +35,9 @@ public class GameDriver{
     public void start() {
         // TODO: Implement.
         // This should set the MainView's screen to the start menu screen.
-        mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
-        runGame();
+        mainView.setScreen(MainView.Screen.START_MENU_SCREEN);
+        //mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
+       // runGame();
 
     }
 
@@ -67,7 +67,7 @@ public class GameDriver{
         for (int i = 0; i < WallImageInfo.readWalls().size(); i++)
         {
             String walls = "wall-" + i ;
-            Wall wall = new Wall(walls, 3,
+            Wall wall = new Wall(walls, 4,
                     WallImageInfo.readWalls().get(i).getX(),
                     WallImageInfo.readWalls().get(i).getY(),
                     0
@@ -79,6 +79,8 @@ public class GameDriver{
                     wall.getY(),
                     0);
         }
+
+
 
 
         gameState.addEntity(playerTank);
@@ -126,7 +128,6 @@ public class GameDriver{
             //gameState.addTempShell(entity);
             entity.move(gameState);
             entity.checkBounds(gameState);
-            entity.checkLives(gameState);
 
             //entity.checkBounds(gameState) is inside the move()
         }
@@ -184,6 +185,7 @@ public class GameDriver{
     public void actionPerformed(ActionEvent event) {
         String actionCommand = event.getActionCommand();
         if (actionCommand.equals(StartMenuView.START_BUTTON_ACTION_COMMAND)) {
+            runGame();
             mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
             System.out.println("Start Game");
         } else if (actionCommand.equals(StartMenuView.EXIT_BUTTON_ACTION_COMMAND)) {
@@ -204,22 +206,25 @@ public class GameDriver{
         }
          else if (entity1 instanceof Shell && entity2 instanceof Wall)
         {
-            shellVsWall(entity1, entity2);
+                shellVsWall(entity1, entity2);
         }
         else if (entity1 instanceof  Wall && entity2 instanceof Shell)
         {
-            shellVsWall(entity2, entity1);
+             shellVsWall(entity2, entity1);
         }
-//        else if ( entity1 instanceof  Tank && entity2 instanceof Shell)
-//        {
-//            tankVsShell(entity1, entity2);
-//        }
+        else if ( entity1 instanceof Shell && entity2 instanceof Shell)
+        {
+            shellVsShell(entity1, entity2);
+        }
+        else if ( entity1 instanceof  Tank && entity2 instanceof Shell)
+        {
+            tankVsShell(entity1, entity2);
+        }
 //        else if (entity1 instanceof  Shell && entity2 instanceof Tank)
 //        {
 //            tankVsShell(entity2, entity1);
 //        }
     }
-
 
     private void tankVsTank(Entity tankA, Entity tankB )
     {
@@ -258,33 +263,74 @@ public class GameDriver{
         double value4 = entity2.getYBound() - entity1.getY();
 
         if (value1 < value2 && value1 < value3 && value1 < value4)
-        { entity1.setX ( entity1.getX() - value1);}
-        else if (value2 < value1 && value2 < value3 && value3 < value4)
-        { entity1.setX(entity1.getX() + value2); }
+        {
+            entity1.setX ( entity1.getX() - value1);
+        }
+        else if (value2 < value1 && value2 < value3 && value2 < value4)
+        {
+            entity1.setX(entity1.getX() + value2);
+        }
         else if (value3 < value4 && value3 < value1 && value3 < value2)
-        { entity1.setY(entity1.getY() - value3); }
+        {
+            entity1.setY(entity1.getY() - value3);
+        }
         else if ( value4 < value3 && value4 < value1 && value4 < value2)
-        { entity1.setY(entity1.getY() + value4); }
+        {
+            entity1.setY(entity1.getY() + value4);
+        }
     }
-//    private void tankVsShell (Entity tank, Entity shell )
-//    {
-//        runGameView.removeDrawableEntity(shell.getId());
-//        runGameView.addAnimation(RunGameView.SHELL_EXPLOSION_ANIMATION,
-//                RunGameView.SHELL_EXPLOSION_FRAME_DELAY,
-//                shell.getX(),
-//                shell.getY());
-//        gameState.removeEntity(shell);
-//    }
+    private void tankVsShell (Entity tank, Entity shell )
+    {
+        if(!shell.getShooterID().equals(tank.getId())) {
+            // shooterID : the string ID of the tank
+            // if(!shell.getShooterID().equals(tank.getId())) {
+            tank.setHealth(tank.getHealth() - 1);
+            System.out.println(tank.getId() + " " + tank.getHealth());
+            gameState.addRemovableEntity(shell);
+            runGameView.addAnimation(RunGameView.SHELL_EXPLOSION_ANIMATION,
+                    RunGameView.SHELL_EXPLOSION_FRAME_DELAY,
+                    shell.getX(),
+                    shell.getY());
 
+            if (tank.getHealth() < 0) {
+                gameState.addRemovableEntity(tank);
+                runGameView.addAnimation(RunGameView.BIG_EXPLOSION_ANIMATION,
+                        RunGameView.BIG_EXPLOSION_FRAME_DELAY,
+                        tank.getX(),
+                        tank.getY());
+
+                if(tank instanceof PlayerTank)
+                {
+                    mainView.setScreen(MainView.Screen.END_MENU_SCREEN);
+                }
+            }
+        }
+    }
     private void shellVsWall (Entity shell, Entity wall)
     {
-
-
-        gameState.addRemovableEntity(wall);
         gameState.addRemovableEntity(shell);
+        wall.setHealth(wall.getHealth() - 1); //wall.setHealth;
         runGameView.addAnimation(RunGameView.SHELL_EXPLOSION_ANIMATION,
                 RunGameView.SHELL_EXPLOSION_FRAME_DELAY,
                 shell.getX(),
                 shell.getY());
+            if (wall.getHealth() < 0)
+            {
+                gameState.addRemovableEntity(wall);
+                runGameView.addAnimation((RunGameView.BIG_EXPLOSION_ANIMATION),
+                        RunGameView.SHELL_EXPLOSION_FRAME_DELAY,
+                        shell.getX(),
+                        shell.getY());
+            }
+    }
+
+    private void shellVsShell (Entity shell1, Entity shell2)
+    {
+        gameState.addRemovableEntity(shell1);
+        gameState.addRemovableEntity(shell2);
+        runGameView.addAnimation(RunGameView.BIG_EXPLOSION_ANIMATION,
+                RunGameView.SHELL_EXPLOSION_FRAME_DELAY,
+                shell1.getX(),
+                shell1.getY());
     }
 }

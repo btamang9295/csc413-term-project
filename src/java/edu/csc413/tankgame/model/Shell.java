@@ -1,9 +1,5 @@
 package edu.csc413.tankgame.model;
 
-import edu.csc413.tankgame.GameDriver;
-
-import java.awt.font.GlyphMetrics;
-
 /**
  * Model class representing a shell that has been fired by a tank. A shell has a position and an angle, as well as a
  * speed. Shells by default should be unable to turn and only move forward.
@@ -15,8 +11,8 @@ public class Shell extends Entity{
     private static final double MOVEMENT_SPEED = 4.0;
     private static long uniqueId = 0L;
 
-    public Shell( double x, int health, double y, double angle) {
-      super(getUniqueId(), health,  x, y, angle);
+    public Shell( double x, int health, double y, double angle, String shooterID) {
+      super(getUniqueId(), health,  x, y, angle,  shooterID);
     }
 
     private static String getUniqueId() {
@@ -27,6 +23,21 @@ public class Shell extends Entity{
     public void move(GameState gameState) {
         moveForward();
         //checkBounds(gameState);
+    }
+
+    public String getShooterID()
+    {
+        return shooterID;
+    }
+
+    @Override
+    public int getHealth() {
+        return 0;
+    }
+
+    @Override
+    public void setHealth(int health) {
+
     }
 
     @Override
@@ -53,11 +64,6 @@ public class Shell extends Entity{
     }
 
     @Override
-    public void checkLives(GameState gameState) {
-
-    }
-
-    @Override
     public double getXBound() {
         return getX() + 24.0;
     }
@@ -71,7 +77,6 @@ public class Shell extends Entity{
     @Override
     public void setX(double x) {
         this.x = x;
-
     }
 
     @Override
@@ -85,7 +90,5 @@ public class Shell extends Entity{
         y += MOVEMENT_SPEED * Math.sin(angle);
     }
 
-    public void  lives(GameState gameState) {
 
-    }
 }

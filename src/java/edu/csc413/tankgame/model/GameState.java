@@ -24,6 +24,7 @@ public class GameState {
     public static final String PLAYER_TANK_ID = "player-tank";
     public static final String AI_TANK_ID = "ai-tank";
     public static final String CUSHION_AI_TANK_ID = "cushion-ai";
+    public static final String WALL_IMAGE_FILE_PREFIX = "wall-";
 
 
     // TODO: Feel free to add more tank IDs if you want to support multiple AI tanks! Just make sure they're unique.

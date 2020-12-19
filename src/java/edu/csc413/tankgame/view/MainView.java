@@ -58,8 +58,6 @@ public class MainView {
 
         // TODO: receive and respond keyboard inputs
 
-        // worng implementation
-
 
 
 
