@@ -1,8 +1,8 @@
 package edu.csc413.tankgame.view;
 
 
-import edu.csc413.tankgame.GameDriver;
 
+import edu.csc413.tankgame.GameDriver;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;

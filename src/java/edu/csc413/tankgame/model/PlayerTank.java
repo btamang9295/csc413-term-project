@@ -11,28 +11,16 @@ public class PlayerTank extends Tank  {
     public void move(GameState gameState){
         cooldown++;
 
-        if(GameState.upPressed)
-        {
-            moveForward();
-        }
+        if(GameState.upPressed) { moveForward(); }
 
-         if(GameState.downPressed)
-        {
-            moveBackward();
-        }
+        if(GameState.downPressed) { moveBackward(); }
 
-         if(GameState.leftPressed)
-         {
-             turnLeft();
-         }
+        if(GameState.leftPressed) { turnLeft(); }
 
-         if(GameState.rightPressed)
-         {
-             turnRight();
-         }
-         if (GameState.shootPressed)
-         {
-             if (cooldown > 80) {
+        if(GameState.rightPressed) { turnRight(); }
+
+        if (GameState.shootPressed) {
+            if (cooldown > 80) {
                  shootShell(gameState);
              }
              cooldown = 0;

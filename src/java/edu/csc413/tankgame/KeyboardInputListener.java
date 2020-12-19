@@ -3,6 +3,7 @@ package edu.csc413.tankgame;
 import edu.csc413.tankgame.model.GameState;
 import edu.csc413.tankgame.model.PlayerTank;
 import edu.csc413.tankgame.model.Tank;
+import edu.csc413.tankgame.view.MainView;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -42,8 +43,12 @@ public class KeyboardInputListener implements KeyListener {
         else if (keyCode == KeyEvent.VK_SPACE){
             GameState.holdShootPressed();
             System.out.println("space pressed");
-
         }
+         else if (keyCode == KeyEvent.VK_ESCAPE)
+         {
+             GameState.escapePressed();
+             System.out.println("escape pressed");
+         }
     }
 
     @Override
@@ -74,5 +79,7 @@ public class KeyboardInputListener implements KeyListener {
             System.out.println("Space released");
 
         }
+
+
     }
 }

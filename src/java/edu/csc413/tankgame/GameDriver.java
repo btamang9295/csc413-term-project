@@ -1,6 +1,5 @@
 package edu.csc413.tankgame;
 
-import com.sun.tools.javac.Main;
 import edu.csc413.tankgame.model.*;
 import edu.csc413.tankgame.view.MainView;
 import edu.csc413.tankgame.view.RunGameView;
@@ -8,8 +7,8 @@ import edu.csc413.tankgame.view.StartMenuView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Map;
 
 /**
  * GameDriver is the primary controller class for the tank game. The game is launched from GameDriver.main, and
@@ -26,8 +25,10 @@ public class GameDriver{
 
 
     public GameDriver() {
+        //KeyboardInputListener inputListener = new KeyboardInputListener();
+        ButtonListener buttonListener = new ButtonListener();
         ActionMenu actionMenu = new ActionMenu();
-        mainView = new MainView(actionMenu);
+        mainView = new MainView(actionMenu, buttonListener);
         runGameView = mainView.getRunGameView();
         gameState = new GameState();
     }
@@ -35,9 +36,15 @@ public class GameDriver{
     public void start() {
         // TODO: Implement.
         // This should set the MainView's screen to the start menu screen.
-        mainView.setScreen(MainView.Screen.START_MENU_SCREEN);
-        //mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
-       // runGame();
+
+
+
+        //mainView.setScreen(MainView.Screen.START_MENU_SCREEN);
+
+
+        //comment this out
+        mainView.setScreen(MainView.Screen.RUN_GAME_SCREEN);
+        runGame();
 
     }
 
@@ -49,7 +56,7 @@ public class GameDriver{
                 RunGameView.PLAYER_TANK_INITIAL_Y,
                 RunGameView.PLAYER_TANK_INITIAL_ANGLE);
 
-        Tank aiTank = new DumbAiTank(
+        Tank aiTank = new TurretAITank(
                 GameState.AI_TANK_ID,
                 3,
                 RunGameView.AI_TANK_INITIAL_X,
@@ -63,11 +70,18 @@ public class GameDriver{
                         RunGameView.AI_TANK_2_INITIAL_Y,
                         RunGameView.AI_TANK_2_INITIAL_ANGLE);
 
+        Tank boss_tank = new BossAiTank(
+                GameState.BOSS_AI_TANK_ID,
+                10,
+                RunGameView.BOSS_AI_TANK_INITIAL_X,
+                RunGameView.BOSS_AI_TANK_INITIAL_Y,
+                RunGameView.BOSS_AI_TANK_INITIAL_ANGLE);
+
         WallImageInfo.readWalls();
         for (int i = 0; i < WallImageInfo.readWalls().size(); i++)
         {
             String walls = "wall-" + i ;
-            Wall wall = new Wall(walls, 4,
+            Wall wall = new Wall(walls, 3,
                     WallImageInfo.readWalls().get(i).getX(),
                     WallImageInfo.readWalls().get(i).getY(),
                     0
@@ -86,6 +100,7 @@ public class GameDriver{
         gameState.addEntity(playerTank);
         gameState.addEntity(aiTank);
         gameState.addEntity(cushionAiTank);
+        gameState.addEntity(boss_tank);
 
         //creates a new entity in the run game screen with set position
         runGameView.addDrawableEntity(
@@ -106,6 +121,12 @@ public class GameDriver{
                 cushionAiTank.getX(),
                 cushionAiTank.getY(),
                 cushionAiTank.getAngle());
+        runGameView.addDrawableEntity(
+                GameState.BOSS_AI_TANK_ID,
+                RunGameView.BOSS_AI_TANK_IMAGE_FILE,
+                boss_tank.getX(),
+                boss_tank.getY(),
+                boss_tank.getAngle());
 
         Runnable gameRunner = () -> {
             while (update()) {
@@ -128,8 +149,6 @@ public class GameDriver{
             //gameState.addTempShell(entity);
             entity.move(gameState);
             entity.checkBounds(gameState);
-
-            //entity.checkBounds(gameState) is inside the move()
         }
 
         for (Entity entity : gameState.getEntities()) {
@@ -144,14 +163,27 @@ public class GameDriver{
             }
         }
 
+        for (Entity bossShell: gameState.getSmartShell()) { // adding new shells
+            gameState.addEntity(bossShell);
+            runGameView.addDrawableEntity(
+                    bossShell.getId(),
+                    RunGameView.SMART_SHELL_IMAGE_FILE,
+                    bossShell.getX(),
+                    bossShell.getY(),
+                    bossShell.getAngle());
+        }
+        gameState.getSmartShell().clear();
+
+
+
         for (Entity newShellEntities: gameState.getShellEntities()) { // adding new shells
+            gameState.addEntity(newShellEntities);
             runGameView.addDrawableEntity(
                     newShellEntities.getId(),
                     RunGameView.SHELL_IMAGE_FILE,
                     newShellEntities.getX(),
                     newShellEntities.getY(),
                     newShellEntities.getAngle());
-            gameState.addEntity(newShellEntities);
         }
         gameState.clearShellEntity();
         /*
@@ -174,7 +206,6 @@ public class GameDriver{
         }
         return true;
     }
-
     public static void main(String[] args) {
         GameDriver gameDriver = new GameDriver();
         gameDriver.start();
@@ -192,8 +223,24 @@ public class GameDriver{
             System.out.println("exit");
             mainView.closeGame();
         }
+
     }
 }
+    public class ButtonListener implements KeyListener{
+        @Override
+        public void keyTyped(KeyEvent e) {}
+        @Override
+        public void keyPressed(KeyEvent event) {
+            int keyCode = event.getKeyCode();
+            if (keyCode == KeyEvent.VK_ESCAPE)
+            { mainView.setScreen(MainView.Screen.END_MENU_SCREEN); }
+        }
+        @Override
+        public void keyReleased(KeyEvent e) { }
+    }
+
+
+
 
     private void handleCollision(Entity entity1, Entity entity2){
         if (entity1 instanceof Tank && entity2 instanceof Tank)
@@ -220,10 +267,7 @@ public class GameDriver{
         {
             tankVsShell(entity1, entity2);
         }
-//        else if (entity1 instanceof  Shell && entity2 instanceof Tank)
-//        {
-//            tankVsShell(entity2, entity1);
-//        }
+
     }
 
     private void tankVsTank(Entity tankA, Entity tankB )

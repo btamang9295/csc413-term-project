@@ -24,6 +24,8 @@ public class GameState {
     public static final String PLAYER_TANK_ID = "player-tank";
     public static final String AI_TANK_ID = "ai-tank";
     public static final String CUSHION_AI_TANK_ID = "cushion-ai";
+    public static final String BOSS_AI_TANK_ID = "boss-tank";
+
     public static final String WALL_IMAGE_FILE_PREFIX = "wall-";
 
 
@@ -37,6 +39,7 @@ public class GameState {
     public static boolean leftPressed;
     public static boolean rightPressed;
     public static  boolean shootPressed;
+    public static boolean escPressed;
 
 
 
@@ -65,11 +68,12 @@ public class GameState {
     }
 
 
+
+    //Add the launched in this list
     private final List <Entity> shellEntities = new ArrayList<>();
     public void addShellEntity(Entity shell)
     {
         shellEntities.add(shell);
-        //entities.add(shell);
     }
     public void removeShellEntity(Entity shell)
     {
@@ -85,8 +89,11 @@ public class GameState {
 
 
 
-    private final List <Entity> removableEntity = new ArrayList<>();
 
+
+    //Add Entites that needs to be removed in this list
+
+    private final List <Entity> removableEntity = new ArrayList<>();
     public void addRemovableEntity(Entity entity)
     { removableEntity.add(entity); }
 
@@ -104,6 +111,16 @@ public class GameState {
 
 
 
+
+    //This List stores the smart shell fired by the Boss tank
+    private final List <Entity> smartShell = new ArrayList<>();
+    public void addSmartShell(Entity entity)
+    { smartShell.add(entity); }
+    public List<Entity> getSmartShell()
+    { return smartShell; }
+
+
+
     public boolean entitiesOverlap(Entity entity1, Entity entity2)
     {
         return entity1.getX() < entity2.getXBound()
@@ -113,7 +130,7 @@ public class GameState {
     }
 
 
-    public static void holdUpPressed(){
+     public static void holdUpPressed(){
         upPressed = true;
     }
      public static void holdDownPressed()
@@ -132,4 +149,5 @@ public class GameState {
      {
          shootPressed = true;
      }
+     public static void escapePressed(){escPressed = true; }
 }

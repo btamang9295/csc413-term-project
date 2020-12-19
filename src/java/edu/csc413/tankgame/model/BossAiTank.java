@@ -1,11 +1,21 @@
 package edu.csc413.tankgame.model;
 
-public class CushionAiTank extends Tank {
-    public CushionAiTank(String id, int health, double x, double y, double angle) {
+public class BossAiTank extends Tank {
+    public BossAiTank(String id, int health, double x, double y, double angle) {
         super(id, health, x, y, angle);
     }
 
-    private int cooldown = 600;
+    private int cooldown = 500;
+    public double getXBound() {
+        return getX() + 100.0;
+    }
+
+    @Override
+    public double getYBound() {
+        return getY() + 100.0;
+    }
+
+
     @Override
     public void move(GameState gameState) {
         cooldown --;
@@ -22,20 +32,12 @@ public class CushionAiTank extends Tank {
 
         }else if(angleDifference >Math.toRadians(3.0)){
             turnLeft();
-       }
-        double distance = Math.sqrt(dx*dx+dy*dy);
-        if(distance >400.0)
-        {
-            moveForward();}
-        else if(distance < 200.0)
-        {
-            moveBackward();
         }
         if (cooldown == 0) {
-            shootShell(gameState);
-            cooldown = 600;
+            shootSmartShell(gameState);
+            cooldown = 500;
         }
-  }
+    }
 
 
 }

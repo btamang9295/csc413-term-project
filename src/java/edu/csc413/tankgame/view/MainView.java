@@ -48,7 +48,7 @@ public class MainView {
     // MainView is responsible for assigning listeners to various UI components (like buttons and keyboard input).
     // However, we want to return control to GameDriver when those events happen. How can we have listeners that directs
     // us back to the code in GameDriver?
-    public MainView(GameDriver.ActionMenu actionMenu) {
+    public MainView(GameDriver.ActionMenu actionMenu, GameDriver.ButtonListener buttonListener) {
         mainJFrame = new JFrame();
         mainJFrame.setVisible(false);
         mainJFrame.setResizable(false);
@@ -58,13 +58,9 @@ public class MainView {
 
         // TODO: receive and respond keyboard inputs
 
-
-
-
-
-
         KeyboardInputListener listener = new KeyboardInputListener();
         mainJFrame.addKeyListener(listener);
+        mainJFrame.addKeyListener(buttonListener);
 
 
         mainPanel = new JPanel();
@@ -106,9 +102,7 @@ public class MainView {
         };
         mainJFrame.setSize(screenSize);
         mainPanelLayout.show(mainPanel, screen.getScreenName());
-
         mainJFrame.setVisible(true);
-
 
     }
 
